@@ -2,14 +2,14 @@ body{
     padding: 50px;
 }
 .square{
-    width: 60px;
-    height: 60px;
-    font-size: 40px;
+    width: 70px;
+    height: 70px;
+    font-size: 45px;
     font-weight: 900;
 }
 .board-row{
     display: flex;
-    width: 180px;
+    width: 210px;
     flex-wrap: wrap;
 }
 li{

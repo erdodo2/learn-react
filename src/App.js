@@ -22,6 +22,7 @@ export default function Square() {
         let winData = winner(nextSquares);
         if(winData != null)  {
             const conf = window.confirm('Winner: "' + winData + '". New game?')
+            setHistory([]);
             if(conf){
                 setSquares(Array(9).fill(null))
             }
