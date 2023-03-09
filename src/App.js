@@ -1,92 +1,93 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+
+
 import './App.css';
-import {useState} from "react";
 
-const data=[
-    {
-        name:"Yunus Emre",
-        age:27,
-        image:logo,
-        job:"Software Engineer",
-        city:"Istanbul",
-        salary:5000,
-        tag:["React","Javascript","Nodejs"]
-    },
-    {
-        name:"Burak Yılmaz",
-        age:35,
-        image:logo,
-        job:"Football Player",
-        city:"Istanbul",
-        salary:10000,
-        tag:["React","Javascript","Nodejs"]
-    },
-    {
-        name:"Emir Can",
-        age:25,
-        image:logo,
-        job:"Software Engineer",
-        city:"Istanbul",
-        salary:5000,
-        tag:["React","Javascript","Nodejs"]
-    },
-    {
-        name:"Muhammed Ali",
-        age:30,
-        image:logo,
-        job:"Football Player",
-        city:"Istanbul",
-        salary:10000,
-        tag:["React","Javascript","Nodejs"]
+export default function Square() {
+    const [xIsNext, setXIsNext] = useState(true);
+    const [squares, setSquares] = useState(Array(9).fill(null));
+    const [history,setHistory] = useState([]);
+    const setValue = (i) => {
+        const nextSquares = squares.slice();
+        if(nextSquares[i] != null)return;
+        if (xIsNext) {
+            nextSquares[i] = "X";
+        } else {
+            nextSquares[i] = "O";
+        }
+        setXIsNext(!xIsNext);
+
+        setSquares(nextSquares);
+        addHistory(nextSquares);
+        let winData = winner(nextSquares);
+        if(winData != null)  {
+            const conf = window.confirm('Winner: "' + winData + '". New game?')
+            if(conf){
+                setSquares(Array(9).fill(null))
+            }
+        }
+
+
     }
-]
+    const addHistory = (squares)=>{
+        let newHistory = history;
+        newHistory.push(squares);
+        setHistory(newHistory)
+    }
+    const winner = (squares) => {
+        const lines = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+        for (let i = 0; i < lines.length; i++) {
+            const [a, b, c] = lines[i];
+            if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+                return squares[a];
+            }
+        }
+        return null;
+    }
 
+    const  setHistorySquares =(index) => {
+        setSquares(history[index])
+        let newHistory = history;
+        newHistory.splice(index,newHistory.length-1-index)
+        console.log('history',newHistory)
+        console.log('square',squares)
+        setHistory(newHistory)
+    }
+    return <>
 
-function App() {
-    const [_data,setData]=useState(data)
-   const [name,setName]=useState("")
-const dataChange=(index)=>{
-    let _data2=[..._data]
-    _data2[index].name=name
-    setData(_data2)
-}
-    return (
-        <div className="App">
-            <div className="row">
-                {_data.map((item,index)=>(
+        <div className="board-row">
+            {
+            squares.map((square, i) => {
+                                return <Button value={square} onSquareClick={() => setValue(i)} />
 
-                <div  className="col-3 mt-20" key={index}>
-                    <div className="card">
-                        <img src={logo} className="card-img-top" alt="..." />
-                        <input defaultValue={item.name} onChange={setName(name)}  />
-                        <button onClick={dataChange(index)}></button>
-                        <h3> {item.name}- {item.age}</h3>
-                        <div className="d-flex justify-content-between">
+            })
+            }
 
-                            <h5 className="tag">{item.job}</h5>
-
-                            <h5 className="tag">{item.city}</h5>
-
-                            <h5 className="tag">{item.salary}</h5>
-                        </div>
-                        <br/>
-                        {item.tag.map((tag,index)=>(
-                            <span className="tag" key={index}>{tag}</span>
-                        ))}
-                        <br/>
-
-
-
-
-
-
-                    </div>
-                </div>
-                ))}
-
-            </div>
         </div>
-    );
-}
 
-export default App;
+        <div>
+            <ul>
+                {
+                    history.map((value ,index)=>{
+                        return <li><button onClick={()=>setHistorySquares(index)}>{index+1}. hamle</button></li>
+                    })
+                }
+
+            </ul>
+        </div>
+
+
+    </>
+}
+const Button = ({value,onSquareClick})=>{
+    return <button className="square" onClick={onSquareClick}>{value}</button>
+}
